@@ -1,15 +1,3 @@
-# Terraform AWS Redshift Module
-
-This Terraform module deploys an Amazon Redshift cluster in an existing Virtual Private Cloud (VPC). The module utilizes the `terraform-aws-modules/terraform-aws-vpc` module to create the VPC infrastructure.
-
-## Prerequisites
-
-- [Terraform](https://www.terraform.io/downloads.html) installed.
-- AWS credentials configured with sufficient permissions.
-
-## Usage
-
-```hcl
 data "aws_availability_zones" "available" {
   state = "available"
 }
@@ -24,7 +12,6 @@ module "vpc" {
   enable_nat_gateway = true
   single_nat_gateway = true
 }
-
 module "redshift" {
   source  = "terraform-aws-modules/redshift/aws"
 
@@ -45,23 +32,22 @@ module "redshift" {
   enhanced_vpc_routing   = true
   vpc_security_group_ids = [module.vpc.default_security_group_id]
   subnet_ids             = module.vpc.public_subnets
-  publicly_accessible   = true
+  publicly_accessible = true
   availability_zone_relocation_enabled = true
 
-  # Snapshot copy configuration is commented out
-  # snapshot_copy = {
-  #     destination_region = "us-east-1"
-  #     grant_name         = "example-grant"
-  # }
+    # snapshot_copy = {
+    #     destination_region = "us-east-1"
+    #     grant_name         = "example-grant"
+    # }
 
-  # Logging configuration is commented out
-  # logging = {
-  #   enable        = true
-  #   bucket_name   = "my-s3-log-bucket"
-  #   s3_key_prefix = "example/"
-  # }
+#   logging = {
+#     enable        = true
+#     bucket_name   = "my-s3-log-bucket"
+#     s3_key_prefix = "example/"
+#   }
 
-  # Endpoint access configuration
+
+  # Endpoint access
   create_endpoint_access          = true
   endpoint_name                   = "example-example"
   endpoint_subnet_group_name      = module.vpc.redshift_subnet_group
@@ -72,11 +58,3 @@ module "redshift" {
     Terraform   = "true"
   }
 }
-```
-
-## Important Note
-
-- The `publicly_accessible` parameter is set to `true` in the Redshift module. Ensure that this is intentional and that proper security measures are in place.
-- Encryption is currently disabled (`encrypted = false`). Consider enabling encryption for security.
-- Snapshot creation requires encryption. If encryption is disabled, snapshot creation will not be possible.
-ls
